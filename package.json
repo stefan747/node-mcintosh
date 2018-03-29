@@ -1,0 +1,12 @@
+{
+  "name": "node-mcintosh",
+  "version": "1.0.0",
+  "description": "McIntosh Line Device Control via RS232",
+  "main": "lib.js",
+  "author": "Stefan Kruzlik",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "serialport": "^4.0.1",
+    "usb-detection": "^2.1.0"
+  }
+}
