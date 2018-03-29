@@ -1,5 +1,7 @@
 # McIntosh Line Device Control via RS232
 
+The McIntosh RS232 protocol implementation is based on [McIntosh Labs equipment control](https://community.particle.io/t/mcintosh-labs-audio-equipment-control/16338) article and documentation.
+
 Configure your McIntosh:
 
 * Link speed: 115200
