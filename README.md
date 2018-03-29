@@ -8,7 +8,7 @@ Configure your McIntosh:
 Initialization:
 
 ```javascript
-var McIntoshMcIntosh = require("node-mcintosh");
+var McIntosh = require("node-mcintosh");
 var d = new McIntosh();
 ```
 
@@ -28,11 +28,11 @@ d.on('changed', function(property, value) { });
 
 `property` can be one of the following:
 
-* `'power'`
+* `'power_on'`
+* `'power_off'`
 * `'volume'`
 * `'source'`
 * `'mute'`
-* `'riaa'`
 
 Starting/Stopping the connection to the McIntosh device:
 
