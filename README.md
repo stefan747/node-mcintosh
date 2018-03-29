@@ -48,3 +48,10 @@ d.start(port, baud);
 ```javascript
 d.stop();
 ```
+McIntosh RS232 issues and workarounds
+
+	- C47 does not send any response when it goes in stand by. This means the extension would loose track of the current state.
+      Workaround used is to monitor USB state of the connected USB DAC (I am using the McIntosh C47's DAC via USB connection). C47 is closing DAC USB on standby.
+
+	 - I'm using the Passthru feature on C47 (for Hometheater), but when this mode is initialized, there is no indication via RS232.
+      Workaround is based on RS232 OP1 command response (output 1) which is returned back at this moment.
