@@ -132,6 +132,9 @@ McIntosh.prototype.init = function(opts, closecb) {
         this.emit('preconnected');
         let val = "Standby";
         this.properties.source = val;
+        //get volume in case device is running (QRY does not report volume, so we need to use a 'trick')
+        send.call(this, "(VDN Z1)\n");
+        send.call(this, "(VUP Z1)\n");
 //        send.call(this, "(PON Z1)\n");
 //        send.call(this, "(INP Z1 " + this.properties.source + ")\n");
 //        send.call(this, "(VST Z1 " + this.properties.volume + ")\n");
