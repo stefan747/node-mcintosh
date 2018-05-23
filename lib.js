@@ -76,7 +76,7 @@ McIntosh.prototype.init = function(opts, closecb) {
 
         this._port = new SerialPort(opts.port, {
             baudRate: opts.baud || 115200,
-            parser:   SerialPort.parsers.readline("\n")
+            parser:   SerialPort.parsers.readline(")")
         });
 
         this._port.on('data', data => {
@@ -87,31 +87,31 @@ McIntosh.prototype.init = function(opts, closecb) {
 	    data = data.trim();
 	    console.log('[McIntosh] received: %s', data);
 
-	    if (/^\(VST Z1 ([0-9]*)\)$/.test(data)) {
-	       let val = Number(data.trim().replace(/^\(VST Z1 ([0-9]*)\)$/, "$1"));
+	    if (/^\(VST Z1 ([0-9]*)$/.test(data)) {
+	       let val = Number(data.trim().replace(/^\(VST Z1 ([0-9]*)$/, "$1"));
 	       if (this.properties.volume != val) {
 			   console.log('Changing volume from %d to %d', this.properties.volume, val);
 		   this.properties.volume = val;
 	           this.emit('volume', val);
 	       }
 
-	    } else if (/^.*\(POF Z1\)$/.test(data)) {
+	    } else if (/^.*\(POF Z1$/.test(data)) {
 	        let val = "Standby";
 	        if (this.properties.source != val) { this.properties.source = val; this.emit('source', val); }
 
-	    } else if (/^.*\(MUT Z1 1\)$/.test(data)) { // Mute or Muted
+	    } else if (/^.*\(MUT Z1 1$/.test(data)) { // Mute or Muted
 	        let val = "Muted";
 	        if (this.properties.source != val) { this.properties.source = val; this.emit('source', val); }
 
-	    } else if (/^.*\(MUT Z1 0\)$/.test(data)) { // UnMute or UnMuted
+	    } else if (/^.*\(MUT Z1 0$/.test(data)) { // UnMute or UnMuted
 	        let val = "UnMuted";
 	        if (this.properties.source != val) { this.properties.source = val; this.emit('source', val); }
 
-	    } else if (/^.*\(INP Z1 ([0-9])\)$/.test(data)) {
-	        let val = data.trim().replace(/^.*\(INP Z1 ([0-9])\)$/, "$1");
+	    } else if (/^.*\(INP Z1 ([0-9])$/.test(data)) {
+	        let val = data.trim().replace(/^.*\(INP Z1 ([0-9])$/, "$1");
 	        if (this.properties.source != val) { this.properties.source = val; this.emit('source', val); }
 
-		} else if (/^.*\(OP1 Z1 ([0-9])\)$/.test(data)) {
+		} else if (/^.*\(OP1 Z1 ([0-9])$/.test(data)) {
 			let val = "Passthru";
 	        if (this.properties.source != val) { this.properties.source = val; this.emit('source', val); }
 	    }
@@ -130,12 +130,11 @@ McIntosh.prototype.init = function(opts, closecb) {
     }, 3000);
     this._port.on('open', err => {
         this.emit('preconnected');
-
-            send.call(this, "(PON Z1)\n");
-			send.call(this, "(INP Z1 " + this.properties.source + ")\n");
-//            send.call(this, "(VDN Z1 " + this.properties.volume + ")\n");
-//            send.call(this, "(VUP Z1 " + this.properties.volume + ")\n");
-            send.call(this, "(VST Z1 " + this.properties.volume + ")\n");
+        let val = "Standby";
+        this.properties.source = val;
+//        send.call(this, "(PON Z1)\n");
+//        send.call(this, "(INP Z1 " + this.properties.source + ")\n");
+//        send.call(this, "(VST Z1 " + this.properties.volume + ")\n");
     });
 
 		//detection of McIntosh USB disconnection (at power-off)
