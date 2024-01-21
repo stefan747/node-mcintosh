@@ -1,9 +1,10 @@
 "use strict";
 
-let SerialPort = require("serialport"),
-    util       = require("util"),
-    events     = require('events'),
-    usbDetect  = require('usb-detection');
+const { SerialPort } = require("serialport");
+const { ReadlineParser } = require('@serialport/parser-readline');
+let util       = require("util"),
+    events     = require('events');
+const { usb } = require('usb');
 
 function McIntosh() {
     this.seq = 0;
@@ -74,12 +75,14 @@ McIntosh.prototype.init = function(opts, closecb) {
 
     this.initializing = true;
 
-        this._port = new SerialPort(opts.port, {
-            baudRate: opts.baud || 115200,
-            parser:   SerialPort.parsers.readline(")")
+        this._port = new SerialPort({
+            path: opts.port, 
+            baudRate: opts.baud || 115200
         });
+        this._parser = new ReadlineParser({delimiter: ')'});
+        this._port.pipe(this._parser);
 
-        this._port.on('data', data => {
+        this._parser.on('data', data => {
 	    if (this.initializing) {
 		this.initializing = false;
 		this.emit('connected');
@@ -143,7 +146,8 @@ McIntosh.prototype.init = function(opts, closecb) {
     });
 
 		//detection of McIntosh USB disconnection (at power-off)
-		usbDetect.on('remove:' + this.properties.usbVid, device => { 
+                usb.on('detach', device => { 
+                        if(this.properties.usbVid == device.deviceDescriptor.idVendor) {
 			console.log('remove', device); 
 			let val = "Standby";
 			if (this.properties.source != val) { this.properties.source = val; this.emit('source', val); }
