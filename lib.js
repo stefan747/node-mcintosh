@@ -60,8 +60,9 @@ McIntosh.prototype.set_volume = function (val) {
         return;
     if (this.volumetimer)
         clearTimeout(this.volumetimer);
+    var self = this;
     this.volumetimer = setTimeout(() => {
-        if (this.serialCommandMode == "Zone") {
+        if (self.serialCommandMode == "Zone") {
             send.call(this, "(VST Z1 " + val + ")\n");
         } else {
             send.call(this, "(VOL " + val + ")\n");
@@ -105,6 +106,10 @@ McIntosh.prototype.mute = function (val) {
     } else {
         send.call(this, "(MUT " + val + ")\n");
     }
+};
+
+McIntosh.prototype.raw_command = function (val) {
+        send.call(this, val + "\n");
 };
 
 McIntosh.prototype.init = function (opts, closecb) {

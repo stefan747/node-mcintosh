@@ -40,4 +40,4 @@ function ev_cmd(line) {
     else console.log("!!! Unknown command " + line);
 }
 
-d.start({ "port" : "/dev/ttyUSB", "baud": 9600 });
+d.start({ "port" : "/dev/ttyUSB0", "baud": 115200 });
