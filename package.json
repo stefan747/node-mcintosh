@@ -1,6 +1,6 @@
 {
   "name": "node-mcintosh",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "McIntosh Line Device Control via RS232",
   "main": "lib.js",
   "author": "Stefan Kruzlik",
