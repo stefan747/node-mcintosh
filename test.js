@@ -37,7 +37,7 @@ function ev_cmd(line) {
     else if ((m=line.match(/power on/i))) d.power_on();
     else if ((m=line.match(/power off/i))) d.power_off();
     else if ((m=line.match(/status/i))) d.get_status();
-    else console.log("!!! Unknown command " + line);
+    else d.raw_command(line);
 }
 
 d.start({ "port" : "/dev/ttyUSB0", "baud": 115200 });

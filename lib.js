@@ -44,14 +44,14 @@ McIntosh.prototype.volume_up = function () {
     if (this.serialCommandMode == "Zone") {
         send.call(this, "(VUP Z1)\n");
     } else {
-        send.call(this, "(VOL up)\n");
+        send.call(this, "(VOL U)\n");
     }
 };
 McIntosh.prototype.volume_down = function () {
     if (this.serialCommandMode == "Zone") {
         send.call(this, "(VDN Z1)\n");
     } else {
-        send.call(this, "(VOL do)\n");
+        send.call(this, "(VOL D)\n");
     }
 
 };
@@ -172,8 +172,8 @@ McIntosh.prototype.init = function (opts, closecb) {
                 this.emit('source', val);
             }
 
-        } else if (/^.*\(INP.* ([0-9])$/.test(data)) {
-            let val = data.trim().replace(/^.*\(INP.* ([0-9])$/, "$1");
+        } else if (/^.*\(INP.* ([0-9]*)$/.test(data)) {
+            let val = data.trim().replace(/^.*\(INP.* ([0-9]*)$/, "$1");
             if (this.properties.source != val) {
                 this.properties.source = val;
                 this.emit('source', val);
@@ -186,13 +186,16 @@ McIntosh.prototype.init = function (opts, closecb) {
                 this.emit('source', val);
             }
 
-        } else if (/^.*\(PWR 0$/.test(data)) {
+        } else if (/^.*\(PWR .*$/.test(data)) {
             //if PWR is received, device that is not using Zones is in use -> use 'NoZone' mode
             this.serialCommandMode = "NoZone";
-            let val = "Standby";
-            if (this.properties.source != val) {
-                this.properties.source = val;
-                this.emit('source', val);
+
+            if (/^.*\(PWR 0$/.test(data)) {
+              let val = "Standby";
+              if (this.properties.source != val) {
+                  this.properties.source = val;
+                  this.emit('source', val);
+              }
             }
         } else if (/^\(VOL ([0-9]*)$/.test(data)) {
             let val = Number(data.trim().replace(/^\(VOL ([0-9]*)$/, "$1"));
@@ -220,6 +223,8 @@ McIntosh.prototype.init = function (opts, closecb) {
             //get volume in case device is running (QRY does not report volume, so we need to use a 'trick')
             send.call(this, "(VDN Z1)\n");
             send.call(this, "(VUP Z1)\n");
+            send.call(this, "(VOL D)\n");
+            send.call(this, "(VOL U)\n");
             //        send.call(this, "(PON Z1)\n");
             //        send.call(this, "(INP Z1 " + this.properties.source + ")\n");
             //        send.call(this, "(VST Z1 " + this.properties.volume + ")\n");
